@@ -4560,6 +4560,3 @@ textarea.w-input, textarea.w-select {
   text-transform: uppercase;
 
 }
-
-.fn-button.is-disabled { pointer-events: none; opacity: .5; }
-.fn-button.copied { filter: brightness(1.1); }
