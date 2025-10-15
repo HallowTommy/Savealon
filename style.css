@@ -4554,9 +4554,3 @@ textarea.w-input, textarea.w-select {
     justify-self: stretch;
   }
 }
-
-#TIMERBLOCK.alon-dead {
-  color: #ff3b3b;
-  text-transform: uppercase;
-
-}
