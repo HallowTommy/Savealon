@@ -58,7 +58,12 @@
                         <br/>CA: RN ALON!
                     </p>
                     <div class="fn-button-wrapper">
-                        <a id="w-node-_269d51df-6913-c64c-2a31-816588437d33-5946307d" href="#" class="fn-button w-button">Click to Copy CA!</a>
+<a id="copy-ca-btn"
+   href="#"
+   class="fn-button w-button"
+   data-ca="PASTE_YOUR_CONTRACT_ADDRESS_HERE">
+  Click to Copy CA!
+</a>
                         <a href="#Timer" id="w-node-_269d51df-6913-c64c-2a31-816588437d35-5946307d" class="fn-button-secondery w-button">Check Timer!</a>
                     </div>
                 </div>
@@ -212,6 +217,61 @@
   const t = setInterval(tick, 1000);
 })();
 </script>
+<script>
+(function () {
+  var btn = document.getElementById('copy-ca-btn');
+  if (!btn) return;
+
+  var CA = (btn.dataset.ca || '').trim();
+
+  function copyText(text) {
+    // Предпочитаем современный API (работает по HTTPS)
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text);
+    }
+    // Фолбэк для старых/небезопасных окружений
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.focus(); ta.select();
+      try {
+        document.execCommand('copy') ? resolve() : reject();
+      } catch (e) { reject(e); }
+      document.body.removeChild(ta);
+    });
+  }
+
+  // Если CA ещё не задан — отключаем кнопку
+  if (!CA) {
+    btn.classList.add('is-disabled');
+    btn.setAttribute('aria-disabled', 'true');
+    btn.addEventListener('click', function (e) { e.preventDefault(); });
+    btn.textContent = 'CA not set';
+    return;
+  }
+
+  btn.addEventListener('click', function (e) {
+    e.preventDefault();
+    copyText(CA).then(function () {
+      var old = btn.textContent;
+      btn.textContent = 'CA Copied!';
+      btn.classList.add('copied');
+      setTimeout(function () {
+        btn.textContent = old;
+        btn.classList.remove('copied');
+      }, 1500);
+    }).catch(function () {
+      var old = btn.textContent;
+      btn.textContent = 'Copy failed';
+      setTimeout(function () { btn.textContent = old; }, 1500);
+    });
+  });
+})();
+</script>
     </body>
 </html>
+
 
