@@ -4558,4 +4558,8 @@ textarea.w-input, textarea.w-select {
 #TIMERBLOCK.alon-dead {
   color: #ff3b3b;
   text-transform: uppercase;
+
 }
+
+.fn-button.is-disabled { pointer-events: none; opacity: .5; }
+.fn-button.copied { filter: brightness(1.1); }
