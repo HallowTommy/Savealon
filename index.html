@@ -79,7 +79,10 @@
                 <div class="fn-cta-banner-2">
                     <div class="fn-cta-banner-column-2">
                         <h1 class="fn-heading-11">Tick… Tock… Alon’s life is on the line.</h1>
-                        <p id="TIMERBLOCK" class="fn-paragraph-dark-2">123</p>
+<p id="TIMERBLOCK"
+   class="fn-paragraph-dark-2"
+   data-deadline="2025-10-15T22:00:00Z">00:00:00</p>
+                        
                         <a href="https://x.com" target="_blank" class="fn-button-dark-2 w-button">Join to community now!</a>
                     </div>
                     <img sizes="(max-width: 1024px) 100vw, 1024px" srcset="https://cdn.prod.website-files.com/68edc2549ef08fb559463044/68efaf3052b396e32629dacb_ChatGPT%20Image%2015%20%D0%BE%D0%BA%D1%82.%202025%20%D0%B3.%2C%2017_26_09-p-500.png 500w, https://cdn.prod.website-files.com/68edc2549ef08fb559463044/68efaf3052b396e32629dacb_ChatGPT%20Image%2015%20%D0%BE%D0%BA%D1%82.%202025%20%D0%B3.%2C%2017_26_09-p-800.png 800w, https://cdn.prod.website-files.com/68edc2549ef08fb559463044/68efaf3052b396e32629dacb_ChatGPT%20Image%2015%20%D0%BE%D0%BA%D1%82.%202025%20%D0%B3.%2C%2017_26_09.png 1024w" src="https://cdn.prod.website-files.com/68edc2549ef08fb559463044/68efaf3052b396e32629dacb_ChatGPT%20Image%2015%20%D0%BE%D0%BA%D1%82.%202025%20%D0%B3.%2C%2017_26_09.png" loading="lazy" alt="" class="fn-banner-image-one-2"/>
@@ -225,7 +228,44 @@
   });
 })();
 </script>
+        <script>
+(function () {
+  const el = document.getElementById('TIMERBLOCK');
+  if (!el) return;
+
+  // читаем единый дедлайн из атрибута
+  const deadlineStr = el.dataset.deadline; // ISO, например "2025-10-15T22:00:00Z"
+  const deadlineMs = Date.parse(deadlineStr); // в миллисекундах
+
+  if (isNaN(deadlineMs)) {
+    el.textContent = 'Invalid deadline';
+    return;
+  }
+
+  function pad(n){ return n < 10 ? '0'+n : ''+n; }
+
+  function tick() {
+    const diff = deadlineMs - Date.now(); // разница до единого дедлайна
+    if (diff <= 0) {
+      el.textContent = 'Alon is dead.';
+      el.classList.add('alon-dead');
+      clearInterval(t);
+      return;
+    }
+    const total = Math.floor(diff / 1000);
+    const h = Math.floor(total / 3600);
+    const m = Math.floor((total % 3600) / 60);
+    const s = total % 60;
+    el.textContent = `${pad(h)}:${pad(m)}:${pad(s)}`;
+  }
+
+  tick(); // первый рендер сразу
+  const t = setInterval(tick, 1000);
+})();
+</script>
+
     </body>
 </html>
+
 
 
