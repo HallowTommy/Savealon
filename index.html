@@ -74,7 +74,9 @@
                 <div class="fn-cta-banner-2">
                     <div class="fn-cta-banner-column-2">
                         <h1 class="fn-heading-11">Tick… Tock… Alon’s life is on the line.</h1>
-                        <p id="TIMERBLOCK" class="fn-paragraph-dark-2">Timer</p>
+                        <p id="TIMERBLOCK"
+   class="fn-paragraph-dark-2"
+   data-deadline="2025-10-15T22:00:00Z">00:00:00</p>
                         <a href="#" class="fn-button-dark-2 w-button">Join to community now!</a>
                     </div>
                     <img sizes="(max-width: 1024px) 100vw, 1024px" srcset="https://cdn.prod.website-files.com/68edc2549ef08fb559463044/68efaf3052b396e32629dacb_ChatGPT%20Image%2015%20%D0%BE%D0%BA%D1%82.%202025%20%D0%B3.%2C%2017_26_09-p-500.png 500w, https://cdn.prod.website-files.com/68edc2549ef08fb559463044/68efaf3052b396e32629dacb_ChatGPT%20Image%2015%20%D0%BE%D0%BA%D1%82.%202025%20%D0%B3.%2C%2017_26_09-p-800.png 800w, https://cdn.prod.website-files.com/68edc2549ef08fb559463044/68efaf3052b396e32629dacb_ChatGPT%20Image%2015%20%D0%BE%D0%BA%D1%82.%202025%20%D0%B3.%2C%2017_26_09.png 1024w" src="https://cdn.prod.website-files.com/68edc2549ef08fb559463044/68efaf3052b396e32629dacb_ChatGPT%20Image%2015%20%D0%BE%D0%BA%D1%82.%202025%20%D0%B3.%2C%2017_26_09.png" loading="lazy" alt="" class="fn-banner-image-one-2"/>
@@ -176,49 +178,40 @@
         <script src="https://cdn.prod.website-files.com/68edc2549ef08fb559463044/js/webflow.schunk.36b8fb49256177c8.js" type="text/javascript"></script>
         <script src="https://cdn.prod.website-files.com/68edc2549ef08fb559463044/js/webflow.232b160f.4eec31f5590152c2.js" type="text/javascript"></script>
 <script>
-  // === НАСТРОЙКА ДЕДЛАЙНА (ОДИН ДЛЯ ВСЕХ) ==============================
-  // Укажи дату/время окончания в UTC (ISO 8601). Пример: сегодня +4 часа.
-  // Пример фиксированного дедлайна:
-  // const DEADLINE_UTC = "2025-10-15T22:00:00Z";
-  // Или на ближайшие 4 часа от текущего момента (раскомментируй одну из строк ниже):
-  // const DEADLINE_UTC = new Date(Date.now() + 4 * 60 * 60 * 1000).toISOString();
+(function () {
+  const el = document.getElementById('TIMERBLOCK');
+  if (!el) return;
 
-  const DEADLINE_UTC = new Date(Date.now() + 4 * 60 * 60 * 1000).toISOString();
+  // читаем единый дедлайн из атрибута
+  const deadlineStr = el.dataset.deadline; // ISO, например "2025-10-15T22:00:00Z"
+  const deadlineMs = Date.parse(deadlineStr); // в миллисекундах
 
-  // === ЛОГИКА ТАЙМЕРА ===================================================
-  const el = document.getElementById("TIMERBLOCK");
-  if (el) {
-    el.style.fontFamily = "Kelly Slab, Open Sans, Arial, sans-serif";
-    el.style.letterSpacing = "0.02em";
-    el.style.whiteSpace = "nowrap";
-
-    function pad(n){ return n < 10 ? "0"+n : ""+n; }
-
-    function render(timeLeftMs) {
-      if (timeLeftMs <= 0) {
-        el.textContent = "Alon is dead.";
-        el.classList.add("alon-dead");
-        return false; // сигнал остановить таймер
-      }
-      const totalSec = Math.floor(timeLeftMs / 1000);
-      const h = Math.floor(totalSec / 3600);
-      const m = Math.floor((totalSec % 3600) / 60);
-      const s = totalSec % 60;
-      el.textContent = `${pad(h)}:${pad(m)}:${pad(s)}`;
-      return true;
-    }
-
-    // тик раз в секунду
-    const deadline = new Date(DEADLINE_UTC).getTime();
-
-    // первый рендер сразу
-    let running = render(deadline - Date.now());
-
-    const t = setInterval(() => {
-      running = render(deadline - Date.now());
-      if (!running) clearInterval(t);
-    }, 1000);
+  if (isNaN(deadlineMs)) {
+    el.textContent = 'Invalid deadline';
+    return;
   }
+
+  function pad(n){ return n < 10 ? '0'+n : ''+n; }
+
+  function tick() {
+    const diff = deadlineMs - Date.now(); // разница до единого дедлайна
+    if (diff <= 0) {
+      el.textContent = 'Alon is dead.';
+      el.classList.add('alon-dead');
+      clearInterval(t);
+      return;
+    }
+    const total = Math.floor(diff / 1000);
+    const h = Math.floor(total / 3600);
+    const m = Math.floor((total % 3600) / 60);
+    const s = total % 60;
+    el.textContent = `${pad(h)}:${pad(m)}:${pad(s)}`;
+  }
+
+  tick(); // первый рендер сразу
+  const t = setInterval(tick, 1000);
+})();
 </script>
     </body>
 </html>
+
